@@ -1,0 +1,303 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">Profile</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <!-- <li class="breadcrumb-item"><a href="#">Home</a></li> -->
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <section class="content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-Border">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm">
+                                        <div>
+                                            <button data-toggle="modal" data-target="#modal-changepass" type="button"
+                                                class="btn btn-default"
+                                                style="background-color: #007bff;color: cornsilk;">
+                                                <i class="fas fa-key fa-fw"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-primary card-outline">
+                                <section class="content">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-3">
+
+                                                <!-- Profile Image -->
+                                                <div class="card-Border">
+                                                    <div class="card-body box-profile">
+                                                        <div class="text-center" *ngIf="binaryImage!=null">
+                                                            <img class="profile-user-img img-fluid img-circle"
+                                                                [src]="binaryImage" alt="User profile picture"
+                                                                width="160px" height="160px">
+                                                        </div>
+                                                        <div class="text-center" *ngIf="binaryImage==null">
+                                                            <img class="profile-user-img img-fluid img-circle"
+                                                                src="assets/logo/profilelogo.jpg"
+                                                                alt="User profile picture" width="160px" height="160px">
+                                                        </div>
+
+                                                        <h3 class="profile-username text-center">
+                                                            <!-- {{formProfile.companyname}} -->
+
+                                                        </h3>
+                                                        <h3 class="profile-username text-center">
+                                                            <a class="btn btn-info" style="color: white;"
+                                                                data-toggle="modal"
+                                                                data-target="#modal-changephoto">Change Photo</a>
+
+                                                        </h3>
+
+                                                    </div>
+                                                    <!-- /.card-body -->
+                                                </div>
+                                                <!-- /.card -->
+                                            </div>
+                                            <!-- <div class="card-body">
+                    <div class="card-Border"> -->
+                                            <div>
+                                                <div class="card-body">
+
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <!-- text input -->
+                                                            <div class="form-group">
+                                                                <label>Company Name</label>
+                                                                <input [(ngModel)]=formProfile.companyname
+                                                                    (ngModelChange)="formProfile.companyname = $event.toUpperCase()"
+                                                                    class="form-control" #companyname id="companyname"
+                                                                    placeholder="Enter companyname Name"
+                                                                    title="Type in ....">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label>GST Number</label>
+                                                                <input [(ngModel)]=formProfile.gstno
+                                                                    (ngModelChange)="formProfile.gstno = $event.toUpperCase()"
+                                                                    class="form-control" #gstno id="gstno"
+                                                                    placeholder="Enter gstno" title="Type in ....">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <!-- text input -->
+                                                            <div class="form-group">
+                                                                <label for="">Select State Code</label>
+                                                                <select [(ngModel)]=formProfile.statecode
+                                                                    (ngModelChange)="formProfile.statecode = $event.toUpperCase()"
+                                                                    class="form-control ">
+                                                                    <option selected="selected" value="">Select
+                                                                        State Code</option>
+                                                                    <option *ngFor='let obj of stateList'
+                                                                        value={{obj.statecode}}>
+                                                                        {{obj.statecode}}
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label>Mobile Number</label>
+                                                                <input [(ngModel)]=formProfile.mobileno
+                                                                    (ngModelChange)="formProfile.mobileno = $event.toUpperCase()"
+                                                                    class="form-control" #mobileno id="mobileno"
+                                                                    placeholder="Enter mobileno" title="Type in ....">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label>Address Heading</label>
+                                                                <input [(ngModel)]=formProfile.addressheading
+                                                                    class="form-control" #addressheading
+                                                                    id="addressheading"
+                                                                    placeholder="Enter address heading"
+                                                                    title="Type in ....">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group">
+                                                                <label>Address Title</label>
+                                                                <input [(ngModel)]=formProfile.addresstitle
+                                                                    class="form-control" #addresstitle id="addresstitle"
+                                                                    placeholder="Enter address title"
+                                                                    title="Type in ....">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <!-- text input -->
+                                                            <div class="form-group">
+                                                                <label>Email Id</label>
+                                                                <input [(ngModel)]=formProfile.email
+                                                                    (ngModelChange)="formProfile.email = $event.toUpperCase()"
+                                                                    class="form-control" #email id="email"
+                                                                    placeholder="Enter email id" title="Type in ....">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <button data-toggle="modal" data-target="#modal-changepassword" type="button"
+                                class="btn btn-default" style="background-color: #007bff;color: cornsilk;"
+                                data-toggle="modal" data-target="#modal-passcode">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<!-- model -->
+<div class="modal fade" id="modal-changephoto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- <div class="modal-header"> -->
+            <!-- <div class="modal-body"> -->
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Change Profile photo</h3>
+                    <button id="cancel" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form name="formUpload" #myNgForm="ngForm" (ngSubmit)="FileUpload();myNgForm.resetForm()">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="productCode">choose photo for upload</label>
+                            <input type="file" class="form-control" id="file" (change)="convertImage($event)">
+                        </div>
+
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card -->
+
+            <!-- </div> -->
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
+<!-- model -->
+<div class="modal fade" id="modal-changepass">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- <div class="modal-header"> -->
+            <!-- <div class="modal-body"> -->
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Change Password</h3>
+                    <button (click)="setemptychangepass()" id="cancelpass" type="button" class="close"
+                        data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form name="formChangePass" #myNgForm="ngForm" (ngSubmit)="changepass();myNgForm.resetForm()">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="oldpassowrd">Old Password</label>
+                            <input type="password" class="form-control" id="oldpassowrd" name="oldpassowrd"
+                                placeholder="Enter The oldpassword" [(ngModel)]="formChangePass.oldpassword" required
+                                #oldpassword="ngModel">
+                        </div>
+                        <div class="form-group">
+                            <label for="newpassword">New Password</label>
+                            <input type="password" class="form-control" id="newpassword" name="newpassword"
+                                placeholder="Enter The new password" [(ngModel)]="formChangePass.newpassword" required
+                                #newpassword="ngModel">
+                        </div>
+                        <div class="form-group">
+                            <label for="conformpassword">Confirm Password</label>
+                            <input type="password" class="form-control" id="conformpassword" name="conformpassword"
+                                placeholder="Enter The conform password" [(ngModel)]="formChangePass.conformpassword"
+                                required #productCode="ngModel">
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card -->
+
+            <!-- </div> -->
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-passcode">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- <div class="modal-header"> -->
+            <!-- <div class="modal-body"> -->
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Enter Admin Pass Code</h3>
+                    <button id="cancelpasscode" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form name="formChangePass" #myNgForm="ngForm" (ngSubmit)="SubmitPassCode();myNgForm.resetForm()">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="passcode">Enter Admin Pass Code</label>
+                            <input type="password" class="form-control" id="passcode" name="passcode"
+                                placeholder="Enter The passcode" [(ngModel)]="formChangePass.passcode" required
+                                #oldpassword="ngModel">
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card -->
+
+            <!-- </div> -->
+            <!-- </div> -->
+        </div>
+    </div>
+</div>

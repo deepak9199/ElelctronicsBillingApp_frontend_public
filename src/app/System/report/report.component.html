@@ -1,0 +1,285 @@
+<div class="wrapper">
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Report</h1>
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <!-- <li class="breadcrumb-item"><a (click)='home()'>Home</a></li> -->
+            </ol>
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /below the containts -->
+    <section class="content">
+      <div class="row">
+        <div class="col-12">
+          <div class="card-Border">
+            <div class="card">
+              <div class="card-header">
+                <div class="row float-sm-left">
+                  <div class="col-xs-3">
+                    <select
+                      [(ngModel)]="searchOption"
+                      class="form-control"
+                      style="width: 100%"
+                      (change)="startSearch()"
+                    >
+                      <option selected="selected" value="">
+                        Select Search
+                      </option>
+                      <option
+                        *ngFor="let obj of searchOptionList"
+                        value="{{ obj }}"
+                        selected="selected"
+                        value="All"
+                      >
+                        {{ obj }}
+                      </option>
+                    </select>
+                  </div>
+                  <div
+                    *ngIf="isbyname"
+                    class="col-xs-3"
+                    style="margin-left: 10px"
+                  >
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"
+                          ><i class="fas fa-search"></i
+                        ></span>
+                      </div>
+                      <input
+                        class="form-control"
+                        type="search"
+                        #searchValue
+                        id="myInput"
+                        (keyup)="myFunction(searchValue.value)"
+                        placeholder="Search.."
+                        title="Type in ...."
+                      />
+                    </div>
+                  </div>
+                  <div *ngIf="isday" class="col-xs-3" style="margin-left: 10px">
+                    <select
+                      [(ngModel)]="day"
+                      class="form-control"
+                      style="width: 100%"
+                    >
+                      <option selected="selected" value="0">Select Day</option>
+                      <option *ngFor="let obj of dayList" value="{{ obj }}">
+                        {{ obj }}
+                      </option>
+                    </select>
+                  </div>
+                  <div
+                    *ngIf="ismonth"
+                    class="col-xs-3"
+                    style="margin-left: 10px"
+                  >
+                    <select
+                      [(ngModel)]="month"
+                      class="form-control"
+                      style="width: 100%"
+                    >
+                      <option selected="selected" value="0">
+                        Select Month
+                      </option>
+                      <option *ngFor="let obj of monthList" value="{{ obj }}">
+                        {{ obj }}
+                      </option>
+                    </select>
+                  </div>
+                  <div
+                    *ngIf="isyear"
+                    class="col-xs-3"
+                    style="margin-left: 10px"
+                  >
+                    <select
+                      [(ngModel)]="year"
+                      class="form-control"
+                      style="width: 100%"
+                    >
+                      <option selected="selected" value="0">Select Year</option>
+                      <option *ngFor="let obj of yearList" value="{{ obj }}">
+                        {{ obj }}
+                      </option>
+                    </select>
+                  </div>
+                  <div
+                    *ngIf="isyear"
+                    class="col-xs-3"
+                    style="margin-left: 10px"
+                  >
+                    <button
+                      (click)="search()"
+                      type="button"
+                      class="btn btn-primary btn-block"
+                    >
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+                <div
+                  class="input-group input-group-sm float-sm-right"
+                  style="width: 100px; padding: 5px"
+                >
+                  <button
+                    (click)="exportexcel()"
+                    type="button"
+                    class="btn btn-primary btn-block"
+                  >
+                    <i
+                      class="fa fa-download"
+                      aria-hidden="true"
+                      style="margin-right: 10px"
+                    ></i
+                    >Excel
+                  </button>
+                </div>
+              </div>
+              <!-- table -->
+              <app-loading *ngIf="loading"></app-loading>
+              <div
+                *ngIf="!loading"
+                class="card-body scrolle table-responsive p-0"
+              >
+                <table
+                  class="table table-striped projects css-serial"
+                  id="excel-table"
+                >
+                  <thead>
+                    <tr>
+                      <!-- <th class="project-actions text-center">id</th> -->
+                      <th class="project-actions text-center">Date</th>
+                      <th class="project-actions text-center">Bill no</th>
+                      <th class="project-actions text-center">Name</th>
+                      <th class="project-actions text-center">Gst/Uid</th>
+                      <th class="project-actions text-center">Rate</th>
+                      <th class="project-actions text-center">Cgst %</th>
+                      <th class="project-actions text-center">Cgst</th>
+                      <th class="project-actions text-center">Sgst %</th>
+                      <th class="project-actions text-center">Sgst</th>
+                      <th class="project-actions text-center">Igst %</th>
+                      <th class="project-actions text-center">Igst</th>
+                      <th class="project-actions text-center">Total Tax</th>
+                      <th class="project-actions text-center">Amount</th>
+                    </tr>
+                  </thead>
+                  <app-loading *ngIf="loading"></app-loading>
+                  <tbody>
+                    <tr *ngFor="let obj of saleList">
+                      <!-- <td class="project-actions text-center">{{obj.id}}</td> -->
+                      <td class="project-actions text-center">
+                        {{ obj.date | date }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.invoice_no }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.name }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.gsttin_no }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.rate }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.cgst_per }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.cgst_per_value }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.sgst_per }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.sgst_per_value }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.igst_per }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.igst_per_value }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.gst_tax_value }}
+                      </td>
+                      <td class="project-actions text-center">
+                        {{ obj.item_amount }}
+                      </td>
+                      <td class="text-left py-0 align-middle">
+                        <div>
+                          <div class="btn-group btn-group-sm">
+                            <a class="btn btn-info" style="color: white"
+                              ><i
+                                (click)="PrintSale(obj.invoice_no)"
+                                class="fas fa-print"
+                              ></i
+                            ></a>
+                            <a
+                              (click)="deletesaleobj(obj.invoice_no)"
+                              class="btn btn-danger"
+                              style="color: white"
+                              data-toggle="modal"
+                              data-target="#modal-deletesale"
+                              ><i class="fas fa-trash"></i
+                            ></a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<div class="modal fade" id="modal-deletesale">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title">Delete</h3>
+          <button
+            id="cancelDelete"
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <p style="font-size: 20px; padding: 20px">Are You Want To Delete</p>
+        <div class="card-footer" id="footer" style="float: left">
+          <button
+            type="button"
+            class="btn btn-primary"
+            style="margin-right: 5px"
+            (click)="deleteYes()"
+          >
+            Yes
+          </button>
+          <button type="button" class="btn btn-primary" (click)="deleteNo()">
+            No
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

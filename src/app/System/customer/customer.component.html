@@ -1,0 +1,188 @@
+<div class="wrapper">
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">Customer</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <!-- <li class="breadcrumb-item"><a (click)='home()'>Home</a></li> -->
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /below the containts -->
+        <section class="content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-Border">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="row float-sm-left">
+                                    <div class="col-xs-3">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                            </div>
+                                            <input class="form-control" type="search" #searchValue id="myInput"
+                                                (keyup)="myFunction(searchValue.value)" placeholder="Search.."
+                                                title="Type in ....">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group input-group-sm float-sm-right" style="width: 170px;">
+                                    <div>
+                                        <button data-toggle="modal" data-target="#modal-createprojectss" type="button"
+                                            class="btn btn-default" style="background-color: #007bff;color: cornsilk;"
+                                            (click)=setEmpty()>Create Customer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- table -->
+                            <app-loading *ngIf="loading"></app-loading>
+                            <div *ngIf="!loading" class="card-body scrolle table-responsive p-0">
+                                <table class="table table-striped projects css-serial" id="excel-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="project-actions text-center">S/N</th>
+                                            <th class="project-actions text-center">Name</th>
+                                            <th class="project-actions text-center">GST/UID Number</th>
+                                            <th class="project-actions text-center">Address</th>
+                                        </tr>
+                                    </thead>
+                                    <app-loading *ngIf="loading"></app-loading>
+                                    <tbody>
+                                        <tr *ngFor="let obj of customerList">
+                                            <td class="project-actions text-center"></td>
+                                            <td class="project-actions text-center">{{obj.name}}</td>
+                                            <td class="project-actions text-center">{{obj.gst}}</td>
+                                            <td class="project-actions text-center">{{obj.address}}</td>
+                                            <td class="text-left py-0 align-middle">
+                                                <div>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a class="btn btn-info" style="color: white;"
+                                                            data-toggle="modal" data-target="#modal-editProject"
+                                                            (click)=update(obj)><i class="fas fa-pencil-alt"></i></a>
+                                                        <a class="btn btn-danger" style="color: white;"
+                                                            data-toggle="modal" data-target="#modal-deleteCustomer"
+                                                            (click)=assignToDelete(obj)><i class="fas fa-trash"></i></a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-createprojectss">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Create Customer</h3>
+                    <button id="cancelAdd" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form name="formAdd" #myNgForm="ngForm" (ngSubmit)="addcustomer()">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="name">Customer Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter The gst"
+                                [(ngModel)]="formAdd.name" (ngModelChange)="formAdd.name = $event.toUpperCase()"
+                                required #name="ngModel">
+                        </div>
+                        <div class="form-group">
+                            <label for="gst">GST/UID Number</label>
+                            <input type="text" class="form-control" id="gst" name="gst" placeholder="Enter The gst"
+                                [(ngModel)]="formAdd.gst" (ngModelChange)="formAdd.gst = $event.toUpperCase()" required
+                                #gst="ngModel">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" class="form-control" id="address" name="address"
+                                placeholder="Enter The address" [(ngModel)]="formAdd.address"
+                                (ngModelChange)="formAdd.address = $event.toUpperCase()" required #address="ngModel">
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-editProject">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Update Projects</h3>
+                    <button id="cancelEdit" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form name="formEdit" #myNgForm="ngForm" (ngSubmit)="updateCustomer();myNgForm.resetForm()">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="name">Customer Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter The gst"
+                                [(ngModel)]="formEdit.name" (ngModelChange)="formEdit.name = $event.toUpperCase()"
+                                required #name="ngModel">
+                        </div>
+                        <div class="form-group">
+                            <label for="gst">GST/UID Number</label>
+                            <input type="text" class="form-control" id="gst" name="gst" placeholder="Enter The gst"
+                                [(ngModel)]="formEdit.gst" (ngModelChange)="formEdit.gst = $event.toUpperCase()"
+                                required #gst="ngModel">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" class="form-control" id="address" name="address"
+                                placeholder="Enter The address" [(ngModel)]="formEdit.address"
+                                (ngModelChange)="formEdit.address = $event.toUpperCase()" required #address="ngModel">
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-deleteCustomer">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Delete</h3>
+                    <button id="cancelDelete" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <p style="font-size: 20px;padding: 20px;">Are You Want To Delete</p>
+                <div class="card-footer" id="footer" style="float: left;">
+                    <button type="button" class="btn btn-primary" style="margin-right: 5px;"
+                        (click)="deleteYes()">Yes</button>
+                    <button type="button" class="btn btn-primary" (click)="deleteNo()">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

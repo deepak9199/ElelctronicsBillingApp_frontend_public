@@ -1,0 +1,183 @@
+<app-loading *ngIf="loading"></app-loading>
+<main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
+  <div class="container">
+    <div class="card login-card">
+      <div class="row no-gutters">
+        <div class="col-md-5">
+          <img src="assets/loginpageimages/logs.jpg" alt="login" class="login-card-img">
+        </div>
+        <div class="col-md-7">
+          <div class="card-body">
+            <!-- <div class="brand-wrapper">
+              <img src="assets/logo/loginlogo.png" alt="logo" class="logo">
+            </div> -->
+            <p class="login-card-description">Sign into your account</p>
+            <form *ngIf="!isLoggedIn" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+              <!--<div class="form-group">
+                    <label for="email" class="sr-only">Email</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Email address">
+                  </div>-->
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" placeholder="Username" class="form-control"
+                  [(ngModel)]="form.username" required #username="ngModel" />
+                <div class="alert alert-danger" role="alert" *ngIf="f.submitted && username.invalid">Username is
+                  Required</div>
+              </div>
+              <div class="form-group mb-4">
+                <label for="password" class="sr-only">Password</label>
+                <input type="password" name="password" id="password" placeholder="***********" class="form-control"
+                  [(ngModel)]="form.password" required minlength=6 #password="ngModel" />
+                <div class="alert alert-danger" role="alert" *ngIf="f.submitted && password.invalid">
+                  <div *ngIf="password.errors?.['required']">Password is required</div>
+                  <div *ngIf="password.errors?.['minlength']">Password must be at least 6 characters</div>
+                </div>
+              </div>
+              <!--<input name="login" id="login" class="btn btn-block login-btn mb-4" type="button" value="Login">-->
+              <div class="form-group">
+                <button class="btn btn-primary btn-block">
+                  Login
+                </button>
+              </div>
+              <a href="" data-toggle="modal" data-target="#modal-signup">Registration</a>
+              <br>
+              <a href="" data-toggle="modal" data-target="#modal-forgetpassword">Forget Password</a>
+              <div class="form-group">
+                <div class="alert alert-danger" role="alert" *ngIf="f.submitted && isLoginFailed">Login failed: {{
+                  errorMessage }}</div>
+              </div>
+            </form>
+            <div class="alert alert-success" *ngIf="isLoggedIn">
+              Logged in as {{ roles }}.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="modal fade" id="modal-signup">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title">Sign Up</h3>
+          <button id="cancelAdd" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <app-loading *ngIf="loadingsignup"></app-loading>
+        <form name="formAdd" (ngSubmit)="myNgFormSignup.form.valid && addcustomer()" #myNgFormSignup="ngForm"
+          novalidate>
+          <div *ngIf="!loadingsignup" class="card-body">
+            <div class="form-group">
+              <label for="Email">Enter Email</label>
+              <input type="text" class="form-control" id="email" name="email" placeholder="Enter The email"
+                [(ngModel)]="formAdd.email" required #email="ngModel">
+              <div class="alert alert-danger" role="alert" *ngIf="myNgFormSignup.submitted && email.invalid">
+                <div *ngIf="email.errors?.['required']">Email is required</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="gst">Password</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Enter The password"
+                [(ngModel)]="formAdd.password" required #password="ngModel" minlength="6">
+              <div class="alert alert-danger" role="alert" *ngIf="myNgFormSignup.submitted && password.invalid">
+                <div *ngIf="password.errors?.['required']">password is required</div>
+                <div *ngIf="password.errors?.['minlength']">Password must be at least 6 characters</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="conformopassword">Conform Password</label>
+              <input type="password" class="form-control" id="conformopassword" name="conformopassword"
+                placeholder="Enter The ConformPassword" [(ngModel)]="formAdd.conformopassword" required
+                #conformopassword="ngModel" minlength="6">
+              <div class="alert alert-danger" role="alert" *ngIf="myNgFormSignup.submitted && conformopassword.invalid">
+                <div *ngIf="conformopassword.errors?.['required']">conformopassword is required</div>
+                <div *ngIf="conformopassword.errors?.['minlength']">Password must be at least 6 characters</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="adminpasscode">Admin Pass Code</label>
+              <input type="password" class="form-control" id="adminpasscode" name="adminpasscode"
+                placeholder="Enter The adminpasscode" [(ngModel)]="formAdd.adminpasscode" required
+                #adminpasscode="ngModel" minlength="6">
+              <div class="alert alert-danger" role="alert" *ngIf="myNgFormSignup.submitted && adminpasscode.invalid">
+                <div *ngIf="adminpasscode.errors?.['required']">password is required</div>
+                <div *ngIf="adminpasscode.errors?.['minlength']">Password must be at least 6 characters</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-forgetpassword">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title">Forget Passowrd</h3>
+          <button id="cancelchangepass" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <app-loading *ngIf="loadingchangepass"></app-loading>
+        <form name="formChangePass" #myNgFormforgetpassowrd="ngForm"
+          (ngSubmit)="myNgFormforgetpassowrd.form.valid &&  forgetpassowrd()" novalidate>
+          <div *ngIf="!loadingchangepass" class="card-body">
+            <div class="form-group">
+              <label for="Email">Enter Email</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Enter The email"
+                #username="ngModel" required [(ngModel)]="formChangePass.username">
+              <div class="alert alert-danger" role="alert" *ngIf="myNgFormforgetpassowrd.submitted && username.invalid">
+                <div *ngIf="username.errors?.['required']">Email is required</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="gst">New Password</label>
+              <input type="password" class="form-control" id="newpassword" name="newpassword"
+                placeholder="Enter The new newpassword" [(ngModel)]="formChangePass.newpassword" required minlength="6"
+                #newpassword="ngModel">
+              <div class="alert alert-danger" role="alert"
+                *ngIf="myNgFormforgetpassowrd.submitted && newpassword.invalid">
+                <div *ngIf="newpassword.errors?.['required']">password is required</div>
+                <div *ngIf="newpassword.errors?.['minlength']">Password must be at least 6 characters</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="conformopassword">Conform New Password</label>
+              <input type="password" class="form-control" id="conformpassword" name="conformpassword"
+                placeholder="Enter The Conform new Password" [(ngModel)]="formChangePass.conformpassword" required
+                minlength="6" #conformpassword="ngModel">
+              <div class="alert alert-danger" role="alert"
+                *ngIf="myNgFormforgetpassowrd.submitted && conformpassword.invalid">
+                <div *ngIf="conformpassword.errors?.['required']">conformpassword is required</div>
+                <div *ngIf="conformpassword.errors?.['minlength']">conformpassword must be at least 6 characters</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="adminpasscode">Admin Pass Code</label>
+              <input type="password" class="form-control" id="passcode" name="passcode" placeholder="Enter The passcode"
+                minlength="6" [(ngModel)]="formChangePass.passcode" required #passcode="ngModel">
+              <div class="alert alert-danger" role="alert" *ngIf="myNgFormforgetpassowrd.submitted && passcode.invalid">
+                <div *ngIf="passcode.errors?.['required']">Admin Pass Code is required</div>
+                <div *ngIf="passcode.errors?.['minlength']">Password must be at least 6 characters</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

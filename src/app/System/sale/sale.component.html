@@ -1,0 +1,2001 @@
+<div class="wrapper">
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">Sale</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+
+                        <ol *ngIf="!isUpdate" class="breadcrumb float-sm-right">
+                            <div class="input-group">
+                                <button type="button" class="btn btn-default"
+                                    style="background-color: #007bff;color: cornsilk;" (click)="SaveSale()">Save
+                                </button>
+                            </div>
+                        </ol>
+                        <ol *ngIf="isUpdate" class="breadcrumb float-sm-right">
+                            <div class="input-group">
+                                <button type="button" class="btn btn-default"
+                                    style="background-color: #007bff;color: cornsilk;" (click)="UpdateSale()">Update
+                                </button>
+                            </div>
+                        </ol>
+                        <ol class="breadcrumb float-sm-right">
+                            <div class="input-group">
+                                <button type="button" class="btn btn-default"
+                                    style="background-color: #007bff;color: cornsilk;" (click)="NewSaleEntry()">New
+                                    Entry
+                                </button>
+                            </div>
+                        </ol>
+                        <ol class="breadcrumb float-sm-right">
+                            <div class="input-group">
+                                <button type="button" class="btn btn-default"
+                                    style="background-color: #007bff;color: cornsilk;" (click)="PrintSale()">Print
+                                </button>
+                            </div>
+                        </ol>
+                        <ol class="breadcrumb float-sm-right">
+                            <div class="input-group">
+                                <button type="button" class="btn btn-default"
+                                    style="background-color: #007bff;color: cornsilk;" (click)="NewSaleEntry()">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            </div>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <app-loading *ngIf="loading"></app-loading>
+        <!-- /below the containts -->
+        <section *ngIf="!loading" class="content">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-Border">
+                        <div class="card">
+                            <!-- bill no  and date -->
+                            <div class="card-header">
+                                <div class="row float-sm-left">
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Invoice No.</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSale.invoice_no class="form-control" #invoice_no
+                                                id="invoice_no" placeholder="invoice no." title="Type in ...."
+                                                type="number" [disabled]="billDisable"
+                                                (keyup.enter)="setDataForUpdate()">
+                                            <div *ngIf="isUpdate" class="input-group-prepend" style="cursor: pointer;"
+                                                (click)="setDataForUpdate()">
+                                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Date</label>
+                                        <div class="input-group">
+                                            <input type="date" [(ngModel)]=formSale.date class="form-control" #Date
+                                                id="Date" placeholder="Date" title="Type in ....">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Session</label>
+                                        <select [(ngModel)]=formSale.session class="form-control " style="width: 130px;"
+                                            [disabled]=!isUpdate>
+                                            <option selected="selected" value="">Select Item</option>
+                                            <option *ngFor='let objItem of sessionOption' value={{objItem}}>
+                                                {{objItem}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" [(ngModel)]=isUpdate type="checkbox"
+                                                id="customCheckbox2" value="option1" (change)="forUpdate($event)">
+                                            <label for="customCheckbox2" class="custom-control-label"
+                                                style="margin-top: 35px;margin-left: 10px;"> Update </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" [(ngModel)]=isMantainStoke
+                                                type="checkbox" id="customCheckbox3" value="option2"
+                                                (change)="forMantainStoke($event)">
+                                            <label for="customCheckbox3" class="custom-control-label"
+                                                style="margin-top: 35px;margin-left: 10px;"> Mantain Stoke </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" [(ngModel)]=isFinance type="checkbox"
+                                                id="customCheckbox4" value="option3" (change)="forFinance($event)">
+                                            <label for="customCheckbox4" class="custom-control-label"
+                                                style="margin-top: 35px;margin-left: 10px;"> Finance </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- customer details -->
+                            <div class="card-header">
+                                <div class="row float-sm-left">
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Enter Customer Name</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend" style="cursor: pointer;"
+                                                data-toggle="modal" data-target="#modal-customerList">
+                                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                            </div>
+                                            <input [(ngModel)]=formSale.name
+                                                (ngModelChange)="formSale.name = $event.toUpperCase()"
+                                                class="form-control" #name id="name" placeholder="Enter Customer Name"
+                                                title="Type in ....">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Enter Address</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSale.address
+                                                (ngModelChange)="formSale.address = $event.toUpperCase()"
+                                                class="form-control" #address id="address" placeholder="Enter Address"
+                                                title="Type in ....">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Enter GST/UID</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSale.gsttin_no
+                                                (ngModelChange)="formSale.gsttin_no = $event.toUpperCase()"
+                                                class="form-control" #gsttin_no id="gsttin_no"
+                                                placeholder="Enter GST/UID" title="Type in ....">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Select State</label>
+                                        <select [(ngModel)]=formSale.state
+                                            (change)="stateNameSyn()"
+                                            class="form-control " style="width: 100%;">
+                                            <option selected="selected" value="">Select State</option>
+                                            <option *ngFor='let obj of stateList' value={{obj.statename}} >
+                                                {{obj.statename}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Select State Code</label>
+                                        <select [(ngModel)]=formSale.state_code
+                                            (change)="stateCodeSyn()"
+                                            class="form-control " style="width: 100%;">
+                                            <option selected="selected" value="">Select State Code</option>
+                                            <option *ngFor='let obj of stateList' value={{obj.statecode}} >
+                                                {{obj.statecode}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Enter Vehical no.</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSale.vehicalno
+                                                (ngModelChange)="formSale.vehicalno = $event.toUpperCase()"
+                                                class="form-control" #vehicalno id="vehicalno"
+                                                placeholder="Enter vehical no" title="Type in ....">
+                                        </div>
+                                    </div>
+                                    <div [hidden]="!isFinance" class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Finance By</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSale.financeby
+                                                (ngModelChange)="formSale.financeby = $event.toUpperCase()"
+                                                class="form-control" #financeby id="financeby"
+                                                placeholder="Enter financeby" title="Type in ....">
+                                        </div>
+                                    </div>
+                                    <div [hidden]="!isFinance" class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Finance Down Payment</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSale.financedownpayment type="number"
+                                                (ngModelChange)="formSale.financedownpayment = $event.toUpperCase()"
+                                                class="form-control" #financedownpayment id="financedownpayment"
+                                                placeholder="Enter financedownpayment" title="Type in ....">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <!-- sale item -->
+                            <div class="card-header">
+                                <div class="row float-sm-left">
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Select Item</label>
+                                        <select (click)="addcustomer()" [(ngModel)]=formSaleItem.item
+                                            class="form-control " style="width: 100%;">
+                                            <option selected="selected" value="">Select Item</option>
+                                            <option *ngFor='let objItem of itemList' value={{objItem.name}}>
+                                                {{objItem.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;width: 100px;">
+                                        <label for="">Hsn Code</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSaleItem.hsn_code
+                                                (ngModelChange)="formSaleItem.hsn_code = $event.toUpperCase()"
+                                                class="form-control" #hsn_code id="hsn_code" placeholder="Hsncode"
+                                                title="Type in ....">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Model no.</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSaleItem.model_no
+                                                (ngModelChange)="formSaleItem.model_no = $event.toUpperCase()"
+                                                class="form-control" #model_no id="model_no" placeholder="model no"
+                                                title="Type in ....">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;">
+                                        <label for="">Serial no./ IMEI No.</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSaleItem.sl_no_and_emie_no
+                                                (ngModelChange)="formSaleItem.sl_no_and_emie_no = $event.toUpperCase()"
+                                                class="form-control" #sl_no_and_emie_no id="sl_no_and_emie_no"
+                                                placeholder="Serial no./ IMEI No." title="Type in ....">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;width: 70px;">
+                                        <label for="">Quantity</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSaleItem.quantity class="form-control" #quantity
+                                                id="quantity" placeholder="Enter Quantity" title="Type in ...."
+                                                appTwoDigitDecimaNumber>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;width: 70px;">
+                                        <label for="">Cgst %</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSaleItem.cgst_per class="form-control" #cgst_per
+                                                id="cgst_per" placeholder="Enter cgst_per" title="Type in ...."
+                                                appTwoDigitDecimaNumber>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;width: 70px;">
+                                        <label for="">Sgst %</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSaleItem.sgst_per class="form-control" #sgst_per
+                                                id="sgst_per" placeholder="Enter sgst_per" title="Type in ...."
+                                                appTwoDigitDecimaNumber>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;width: 70px;">
+                                        <label for="">Igst %</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSaleItem.igst_per class="form-control" #igst_per
+                                                id="igst_per" placeholder="Enter igst_per" title="Type in ...."
+                                                appTwoDigitDecimaNumber>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;width: 100px;">
+                                        <label for="">Amount</label>
+                                        <div class="input-group">
+                                            <input [(ngModel)]=formSaleItem.item_amount class="form-control"
+                                                #item_amount id="item_amount" placeholder="Enter item_amount"
+                                                title="Type in ...." appTwoDigitDecimaNumber>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3" style="padding: 2px;margin-top: 8px;">
+                                        <label for=""> </label>
+                                        <div class="input-group">
+                                            <button type="button" class="btn btn-default"
+                                                style="background-color: #007bff;color: cornsilk;"
+                                                (click)="addSaleItem()">Add Item
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- table -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-striped projects css-serial" id="excel-table">
+                                    <thead>
+                                        <tr>
+                                            <!-- <th class="project-actions text-center">S/N</th> -->
+                                            <th class="project-actions text-center">Item</th>
+                                            <th class="project-actions text-center">Hsn Code</th>
+                                            <th class="project-actions text-center">Model</th>
+                                            <th class="project-actions text-center">Seral no. /IMEI no.</th>
+                                            <th class="project-actions text-center">Quantity</th>
+                                            <th class="project-actions text-center">Rate</th>
+                                            <th class="project-actions text-center">Cgst %</th>
+                                            <th class="project-actions text-center">Sgst %</th>
+                                            <th class="project-actions text-center">Igst %</th>
+                                            <th class="project-actions text-center">Tax Amount</th>
+                                            <th class="project-actions text-center">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <app-loading *ngIf="loading"></app-loading>
+                                    <tbody>
+                                        <tr *ngFor="let saleitem of saleItemList">
+                                            <!-- <td class="project-actions text-center"></td> -->
+                                            <td class="project-actions text-center">{{saleitem.item}}</td>
+                                            <td class="project-actions text-center">{{saleitem.hsn_code}}</td>
+                                            <td class="project-actions text-center">{{saleitem.model_no}}</td>
+                                            <td class="project-actions text-center">{{saleitem.sl_no_and_emie_no}}</td>
+                                            <td class="project-actions text-center">{{saleitem.quantity}}</td>
+                                            <td class="project-actions text-center">{{saleitem.rate}}</td>
+                                            <td class="project-actions text-center">{{saleitem.cgst_per}}</td>
+                                            <td class="project-actions text-center">{{saleitem.sgst_per}}</td>
+                                            <td class="project-actions text-center">{{saleitem.igst_per}}</td>
+                                            <td class="project-actions text-center">{{saleitem.gst_tax_value}}</td>
+                                            <td class="project-actions text-center">{{saleitem.item_amount}}</td>
+                                            <td class="project-actions text-center">
+                                                <div class="text-left py-0 align-middle">
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a class="btn btn-info" style="color: white;"
+                                                            (click)=update(saleitem)><i
+                                                                class="fas fa-pencil-alt"></i></a>
+                                                        <a class="btn btn-danger" style="color: white;"
+                                                            data-toggle="modal" data-target="#modal-deletesaleItem"
+                                                            (click)=assignToDelete(saleitem)><i
+                                                                class="fas fa-trash"></i></a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="12">
+                                                <div class="row float-sm-left">
+                                                    <div class="col-xs-3" style="padding: 2px;width: 500px;">
+                                                        <label for="">Amount in Word</label>
+                                                        <div class="input-group">
+                                                            <input [(ngModel)]=formSale.amount_in_word
+                                                                class="form-control" #amount_in_word id="totalcft"
+                                                                placeholder="Amount " title="Type in ...."
+                                                                [disabled]="disable">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="12">
+                                                <div class="row float-sm-left">
+                                                    <div class="col-xs-3" style="padding: 2px;">
+                                                        <label for="">Total Rate</label>
+                                                        <div class="input-group">
+                                                            <input [(ngModel)]=formSale.total_rate_value
+                                                                class="form-control" #total_rate_value
+                                                                id="total_rate_value" placeholder="Total Tax Amount"
+                                                                title="Type in ...." [disabled]="disable">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-3" style="padding: 2px;">
+                                                        <label for="">Total Tax</label>
+                                                        <div class="input-group">
+                                                            <input [(ngModel)]=formSale.total_tax_value
+                                                                class="form-control" #total_tax_value
+                                                                id="total_tax_value" placeholder="Total Tax Amount"
+                                                                title="Type in ...." [disabled]="disable">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="12">
+                                                <div class="row float-sm-left">
+                                                    <div class="col-xs-3" style="padding: 2px;">
+                                                        <label for="">Total Amount</label>
+                                                        <div class="input-group">
+                                                            <input [(ngModel)]=formSale.total_amount
+                                                                class="form-control" #total_amount id="total_amount"
+                                                                placeholder="Total Amount" title="Type in ...."
+                                                                [disabled]="disable">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-deletesaleItem">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Delete</h3>
+                    <button id="cancelDelete" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <p style="font-size: 20px;padding: 20px;">Are You Want To Delete</p>
+                <div class="card-footer" id="footer" style="float: left;">
+                    <button type="button" class="btn btn-primary" style="margin-right: 5px;"
+                        (click)="deleteYes()">Yes</button>
+                    <button type="button" class="btn btn-primary" (click)="deleteNo()">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-customerList">
+    <div class="modal-dialog  modal-xl">
+        <div class="modal-content">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Customer List</h3>
+                    <button id="cancelCustomer" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <section class="content">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card-Border">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row float-sm-left">
+                                            <div class="col-xs-3">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-search"></i></span>
+                                                    </div>
+                                                    <input class="form-control" type="search" #searchValue id="myInput"
+                                                        (keyup)="myFilterFunction(searchValue.value)"
+                                                        placeholder="Search.." title="Type in ....">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- table -->
+                                    <div class="card-body table-responsive p-0">
+                                        <table class="table table-striped projects css-serial" id="excel-table-1">
+                                            <thead>
+                                                <tr>
+                                                    <th class="project-actions text-center">Name</th>
+                                                    <th class="project-actions text-center">GST/UID Number</th>
+                                                    <th class="project-actions text-center">Address</th>
+                                                </tr>
+                                            </thead>
+                                            <app-loading *ngIf="loading"></app-loading>
+                                            <tbody>
+                                                <tr *ngFor="let obj of customerList">
+                                                    <td class="project-actions text-center">{{obj.name}}</td>
+                                                    <td class="project-actions text-center">{{obj.gst}}</td>
+                                                    <td class="project-actions text-center">{{obj.address}}</td>
+                                                    <td class="text-left py-0 align-middle">
+                                                        <div>
+                                                            <div class="btn-group btn-group-sm">
+                                                                <a class="btn btn-info" style="color: white;"
+                                                                    data-toggle="modal" data-target="#modal-editProject"
+                                                                    (click)=assignToTextBox(obj)><i
+                                                                        class="fas fa-plus"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- print Html code -->
+<div class="modal fade" id="modal-printPage">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <button></button>
+
+            <app-loading *ngIf="loadingPrint"></app-loading>
+
+            <body text="#000000" link="#000000" alink="#000000" vlink="#000000">
+                <table id="demo" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td width="50%">&nbsp;</td>
+                        <td align="center">
+
+                            <a name="JR_PAGE_ANCHOR_0_1"></a>
+                            <table class="jrPage" cellpadding="0" cellspacing="0" border="0"
+                                style="empty-cells: show; width: 595px; border-collapse: collapse; background-color: white;">
+                                <tr valign="top" style="height:0">
+                                    <td style="width:20px"></td>
+                                    <td style="width:31px"></td>
+                                    <td style="width:1px"></td>
+                                    <td style="width:38px"></td>
+                                    <td style="width:10px"></td>
+                                    <td style="width:51px"></td>
+                                    <td style="width:38px"></td>
+                                    <td style="width:22px"></td>
+                                    <td style="width:37px"></td>
+                                    <td style="width:41px"></td>
+                                    <td style="width:14px"></td>
+                                    <td style="width:34px"></td>
+                                    <td style="width:42px"></td>
+                                    <td style="width:35px"></td>
+                                    <td style="width:44px"></td>
+                                    <td style="width:51px"></td>
+                                    <td style="width:66px"></td>
+                                    <td style="width:1px"></td>
+                                    <td style="width:19px"></td>
+                                </tr>
+                                <tr valign="top" style="height:20px">
+                                    <td colspan="19">
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:109px">
+                                    <td>
+                                    </td>
+                                    <td colspan="16">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:555px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:109px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:555px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:33px">
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: Constantia; color: #000000; font-size: 24px; line-height: 1.2207031; font-weight: bold;">M/S
+                                                                SHARMA ELECTRONICS</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:555px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:32px">
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:77px">
+                                                        <td>
+                                                            <div style="width: 100%; height: 100%; position: relative;">
+                                                                <div
+                                                                    style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                                    <table cellpadding="0" cellspacing="0" border="0"
+                                                                        style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                        <tr valign="top" style="height:0">
+                                                                            <td style="width:555px"></td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:20px">
+                                                                            <td
+                                                                                style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                                                <span
+                                                                                    style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125;">DIGWADIH
+                                                                                    NO. 10 NEAR S.B.I SINDRI
+                                                                                    ROAD</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                                <div
+                                                                    style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                                    <table cellpadding="0" cellspacing="0" border="0"
+                                                                        style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                        <tr valign="top" style="height:0">
+                                                                            <td style="width:555px"></td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:19px">
+                                                                            <td>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:58px">
+                                                                            <td>
+                                                                                <div
+                                                                                    style="width: 100%; height: 100%; position: relative;">
+                                                                                    <div
+                                                                                        style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                                                        <table cellpadding="0"
+                                                                                            cellspacing="0" border="0"
+                                                                                            style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                            <tr valign="top"
+                                                                                                style="height:0">
+                                                                                                <td style="width:555px">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:20px">
+                                                                                                <td
+                                                                                                    style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                                                                    <span
+                                                                                                        style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125;">GSTTIN
+                                                                                                        :
+                                                                                                        20BAUPS8686M1ZL</span>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                                                        <table cellpadding="0"
+                                                                                            cellspacing="0" border="0"
+                                                                                            style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                            <tr valign="top"
+                                                                                                style="height:0">
+                                                                                                <td style="width:555px">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:19px">
+                                                                                                <td>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:39px">
+                                                                                                <td>
+                                                                                                    <div
+                                                                                                        style="width: 100%; height: 100%; position: relative;">
+                                                                                                        <div
+                                                                                                            style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                                                                            <table
+                                                                                                                cellpadding="0"
+                                                                                                                cellspacing="0"
+                                                                                                                border="0"
+                                                                                                                style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:0">
+                                                                                                                    <td
+                                                                                                                        style="width:555px">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:20px">
+                                                                                                                    <td
+                                                                                                                        style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                                                                                        <span
+                                                                                                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125;">STATE
+                                                                                                                            :
+                                                                                                                            JH/20</span>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            </table>
+                                                                                                        </div>
+                                                                                                        <div
+                                                                                                            style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                                                                            <table
+                                                                                                                cellpadding="0"
+                                                                                                                cellspacing="0"
+                                                                                                                border="0"
+                                                                                                                style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:0">
+                                                                                                                    <td
+                                                                                                                        style="width:555px">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:19px">
+                                                                                                                    <td>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:20px">
+                                                                                                                    <td
+                                                                                                                        style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                                                                                        <span
+                                                                                                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125;">EMAIL
+                                                                                                                            :
+                                                                                                                            MADANSHARMA188@GMAIL.COM</span>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            </table>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="2">
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:96px">
+                                    <td>
+                                    </td>
+                                    <td colspan="16">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:555px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:96px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:6px"></td>
+                                                        <td style="width:549px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:96px">
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                            <div style="width: 100%; height: 100%; position: relative;">
+                                                                <div
+                                                                    style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                                    <table cellpadding="0" cellspacing="0" border="0"
+                                                                        style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                        <tr valign="top" style="height:0">
+                                                                            <td style="width:44px"></td>
+                                                                            <td style="width:505px"></td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:20px">
+                                                                            <td
+                                                                                style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                <span
+                                                                                    style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Name
+                                                                                    :</span>
+                                                                            </td>
+                                                                            <td>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                                <div
+                                                                    style="position: absolute; overflow: hidden; width: 100%; height: 100%; pointer-events: none; ">
+                                                                    <table cellpadding="0" cellspacing="0" border="0"
+                                                                        style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                        <tr valign="top" style="height:0">
+                                                                            <td style="width:54px"></td>
+                                                                            <td style="width:495px"></td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:19px">
+                                                                            <td colspan="2">
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:20px">
+                                                                            <td
+                                                                                style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                <span
+                                                                                    style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Address
+                                                                                    :</span>
+                                                                            </td>
+                                                                            <td>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                                <div
+                                                                    style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                                    <table cellpadding="0" cellspacing="0" border="0"
+                                                                        style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                        <tr valign="top" style="height:0">
+                                                                            <td style="width:44px"></td>
+                                                                            <td style="width:505px"></td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:20px">
+                                                                            <td>
+                                                                            </td>
+                                                                            <td
+                                                                                style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                <span
+                                                                                    style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">MUKESH
+                                                                                    SHARMA</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:2px">
+                                                                            <td colspan="2">
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:74px">
+                                                                            <td colspan="2">
+                                                                                <div
+                                                                                    style="width: 100%; height: 100%; position: relative;">
+                                                                                    <div
+                                                                                        style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                                                        <table cellpadding="0"
+                                                                                            cellspacing="0" border="0"
+                                                                                            style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                            <tr valign="top"
+                                                                                                style="height:0">
+                                                                                                <td style="width:64px">
+                                                                                                </td>
+                                                                                                <td style="width:485px">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:35px">
+                                                                                                <td colspan="2">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:20px">
+                                                                                                <td
+                                                                                                    style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                                    <span
+                                                                                                        style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Finance
+                                                                                                        By
+                                                                                                        :</span>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        style="position: absolute; overflow: hidden; width: 100%; height: 100%; pointer-events: none; ">
+                                                                                        <table cellpadding="0"
+                                                                                            cellspacing="0" border="0"
+                                                                                            style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                            <tr valign="top"
+                                                                                                style="height:0">
+                                                                                                <td style="width:32px">
+                                                                                                </td>
+                                                                                                <td style="width:22px">
+                                                                                                </td>
+                                                                                                <td style="width:495px">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:16px">
+                                                                                                <td colspan="3">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:20px">
+                                                                                                <td colspan="2"
+                                                                                                    style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:18px">
+                                                                                                <td colspan="3">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:20px">
+                                                                                                <td
+                                                                                                    style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                                    <span
+                                                                                                        style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Date
+                                                                                                        :</span>
+                                                                                                </td>
+                                                                                                <td colspan="2">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                                                        <table cellpadding="0"
+                                                                                            cellspacing="0" border="0"
+                                                                                            style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                            <tr valign="top"
+                                                                                                style="height:0">
+                                                                                                <td style="width:32px">
+                                                                                                </td>
+                                                                                                <td style="width:517px">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr valign="top"
+                                                                                                style="height:74px">
+                                                                                                <td>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <div
+                                                                                                        style="width: 100%; height: 100%; position: relative;">
+                                                                                                        <div
+                                                                                                            style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                                                                            <table
+                                                                                                                cellpadding="0"
+                                                                                                                cellspacing="0"
+                                                                                                                border="0"
+                                                                                                                style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:0">
+                                                                                                                    <td
+                                                                                                                        style="width:376px">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="width:42px">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="width:99px">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:35px">
+                                                                                                                    <td
+                                                                                                                        colspan="3">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:20px">
+                                                                                                                    <td>
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                                                        <span
+                                                                                                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">State
+                                                                                                                            :</span>
+                                                                                                                    </td>
+                                                                                                                    <td>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            </table>
+                                                                                                        </div>
+                                                                                                        <div
+                                                                                                            style="position: absolute; overflow: hidden; width: 100%; height: 100%; pointer-events: none; ">
+                                                                                                            <table
+                                                                                                                cellpadding="0"
+                                                                                                                cellspacing="0"
+                                                                                                                border="0"
+                                                                                                                style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:0">
+                                                                                                                    <td
+                                                                                                                        style="width:22px">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="width:354px">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="width:42px">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="width:99px">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:36px">
+                                                                                                                    <td>
+                                                                                                                    </td>
+                                                                                                                    <td colspan="3"
+                                                                                                                        style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                                                                                        <span
+                                                                                                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">S/O
+                                                                                                                            NAND
+                                                                                                                            LAL
+                                                                                                                            SHARMA
+                                                                                                                            QUARTER
+                                                                                                                            NO
+                                                                                                                            UO
+                                                                                                                            8
+                                                                                                                            DIGWADIH
+                                                                                                                            NO
+                                                                                                                            10
+                                                                                                                            NEW
+                                                                                                                            COLONY
+                                                                                                                            NEAR
+                                                                                                                            KARMAGORA
+                                                                                                                            828110</span>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:18px">
+                                                                                                                    <td
+                                                                                                                        colspan="4">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:20px">
+                                                                                                                    <td
+                                                                                                                        colspan="2">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                                                        <span
+                                                                                                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Bill
+                                                                                                                            No.
+                                                                                                                            :</span>
+                                                                                                                    </td>
+                                                                                                                    <td>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            </table>
+                                                                                                        </div>
+                                                                                                        <div
+                                                                                                            style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                                                                            <table
+                                                                                                                cellpadding="0"
+                                                                                                                cellspacing="0"
+                                                                                                                border="0"
+                                                                                                                style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:0">
+                                                                                                                    <td
+                                                                                                                        style="width:32px">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="width:68px">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="width:32px">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="width:285px">
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        style="width:100px">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:34px">
+                                                                                                                    <td
+                                                                                                                        colspan="5">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:1px">
+                                                                                                                    <td>
+                                                                                                                    </td>
+                                                                                                                    <td colspan="2"
+                                                                                                                        rowspan="2"
+                                                                                                                        style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                                                        <span
+                                                                                                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">HDFC
+                                                                                                                            BANK</span>
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        colspan="2">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:19px">
+                                                                                                                    <td>
+                                                                                                                    </td>
+                                                                                                                    <td>
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        rowspan="2">
+                                                                                                                        <div
+                                                                                                                            style="width: 100%; height: 100%; position: relative;">
+                                                                                                                            <div
+                                                                                                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                                                                                                <table
+                                                                                                                                    cellpadding="0"
+                                                                                                                                    cellspacing="0"
+                                                                                                                                    border="0"
+                                                                                                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                                                                    <tr valign="top"
+                                                                                                                                        style="height:0">
+                                                                                                                                        <td
+                                                                                                                                            style="width:1px">
+                                                                                                                                        </td>
+                                                                                                                                        <td
+                                                                                                                                            style="width:99px">
+                                                                                                                                        </td>
+                                                                                                                                    </tr>
+                                                                                                                                    <tr valign="top"
+                                                                                                                                        style="height:19px">
+                                                                                                                                        <td
+                                                                                                                                            colspan="2">
+                                                                                                                                        </td>
+                                                                                                                                    </tr>
+                                                                                                                                    <tr valign="top"
+                                                                                                                                        style="height:20px">
+                                                                                                                                        <td>
+                                                                                                                                        </td>
+                                                                                                                                        <td
+                                                                                                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                                                                            <span
+                                                                                                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">811</span>
+                                                                                                                                        </td>
+                                                                                                                                    </tr>
+                                                                                                                                </table>
+                                                                                                                            </div>
+                                                                                                                            <div
+                                                                                                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                                                                                                <table
+                                                                                                                                    cellpadding="0"
+                                                                                                                                    cellspacing="0"
+                                                                                                                                    border="0"
+                                                                                                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                                                                                    <tr valign="top"
+                                                                                                                                        style="height:0">
+                                                                                                                                        <td
+                                                                                                                                            style="width:100px">
+                                                                                                                                        </td>
+                                                                                                                                    </tr>
+                                                                                                                                    <tr valign="top"
+                                                                                                                                        style="height:20px">
+                                                                                                                                        <td
+                                                                                                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                                                                            <span
+                                                                                                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Jharkhand
+                                                                                                                                            </span>
+                                                                                                                                        </td>
+                                                                                                                                    </tr>
+                                                                                                                                    <tr valign="top"
+                                                                                                                                        style="height:19px">
+                                                                                                                                        <td>
+                                                                                                                                        </td>
+                                                                                                                                    </tr>
+                                                                                                                                </table>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                                <tr valign="top"
+                                                                                                                    style="height:20px">
+                                                                                                                    <td colspan="2"
+                                                                                                                        style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                                                                                        <span
+                                                                                                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">14-Feb-23</span>
+                                                                                                                    </td>
+                                                                                                                    <td
+                                                                                                                        colspan="2">
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            </table>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="2">
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:30px">
+                                    <td>
+                                    </td>
+                                    <td colspan="2">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:32px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:32px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">SL/no</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="5">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:159px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:159px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Discrpion
+                                                                of goods</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:37px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:1px"></td>
+                                                        <td style="width:36px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td>
+                                                        </td>
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">HSN</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:41px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:41px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">QT.</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="2">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:48px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:48px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Rate</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="2">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:42px"></td>
+                                                        <td style="width:35px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:15px"></td>
+                                                        <td style="width:11px"></td>
+                                                        <td style="width:15px"></td>
+                                                        <td style="width:36px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:14px">
+                                                        <td colspan="3"
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Cgst</span>
+                                                        </td>
+                                                        <td rowspan="2">
+                                                            <div style="width: 100%; height: 100%; position: relative;">
+                                                                <div
+                                                                    style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                                    <table cellpadding="0" cellspacing="0" border="0"
+                                                                        style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                        <tr valign="top" style="height:0">
+                                                                            <td style="width:36px"></td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:30px">
+                                                                            <td
+                                                                                style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                                <div
+                                                                    style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                                    <table cellpadding="0" cellspacing="0" border="0"
+                                                                        style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                        <tr valign="top" style="height:0">
+                                                                            <td style="width:11px"></td>
+                                                                            <td style="width:11px"></td>
+                                                                            <td style="width:14px"></td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:14px">
+                                                                            <td colspan="3"
+                                                                                style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                                                <span
+                                                                                    style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Sgst</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:16px">
+                                                                            <td>
+                                                                            </td>
+                                                                            <td
+                                                                                style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                                                <span
+                                                                                    style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">%</span>
+                                                                            </td>
+                                                                            <td>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:16px">
+                                                        <td>
+                                                        </td>
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">%</span>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:44px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:16px"></td>
+                                                        <td style="width:11px"></td>
+                                                        <td style="width:17px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:14px">
+                                                        <td colspan="3"
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Igst</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:16px">
+                                                        <td>
+                                                        </td>
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">%</span>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:51px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:51px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Tax
+                                                                A/M</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:66px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:66px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:30px">
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">Amount</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="2">
+                                    </td>
+                                </tr>
+                                <tr *ngFor="let n of fakeArray" valign="top" style="height:20px">
+                                    <td>
+                                    </td>
+                                    <td colspan="2"
+                                        style="text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">1</span>
+                                    </td>
+                                    <td colspan="5" style="text-indent: 0px; text-align: left;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 12px; line-height: 1.2578125; font-weight: bold;">EXDIE
+                                            BATTRY</span>
+                                        <br>
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 8px; line-height: 1.2578125;">Model
+                                            :</span>
+                                        <br>
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 8px; line-height: 1.2578125;">IMEI/SLno.
+                                            :</span>
+                                    </td>
+                                    <td style="text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                    </td>
+                                    <td style="text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">1</span>
+                                    </td>
+                                    <td colspan="2"
+                                        style="text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">17059</span>
+                                    </td>
+                                    <td style="text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">14</span>
+                                    </td>
+                                    <td style="text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">14</span>
+                                    </td>
+                                    <td style="text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                    </td>
+                                    <td style="text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">4776.4062</span>
+                                    </td>
+                                    <td style="text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">21835</span>
+                                    </td>
+                                    <td colspan="2">
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:4px">
+                                    <td colspan="19">
+                                    </td>
+                                </tr>
+
+                                <tr valign="top" style="height:20px">
+                                    <td colspan="7">
+                                    </td>
+                                    <td colspan="11">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:100px"></td>
+                                                        <td style="width:287px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:20px">
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: right;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125;">Total
+                                                                :</span>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:66px"></td>
+                                                        <td style="width:321px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:20px">
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                            <div style="width: 100%; height: 100%; position: relative;">
+                                                                <div
+                                                                    style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                                    <table cellpadding="0" cellspacing="0" border="0"
+                                                                        style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                        <tr valign="top" style="height:0">
+                                                                            <td style="width:34px"></td>
+                                                                            <td style="width:48px"></td>
+                                                                            <td style="width:121px"></td>
+                                                                            <td style="width:51px"></td>
+                                                                            <td style="width:67px"></td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:20px">
+                                                                            <td>
+                                                                            </td>
+                                                                            <td
+                                                                                style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                                                <span
+                                                                                    style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">17059</span>
+                                                                            </td>
+                                                                            <td>
+                                                                            </td>
+                                                                            <td
+                                                                                style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                                                <span
+                                                                                    style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">4776</span>
+                                                                            </td>
+                                                                            <td
+                                                                                style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                                                                <span
+                                                                                    style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">21835</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                                <div
+                                                                    style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                                    <table cellpadding="0" cellspacing="0" border="0"
+                                                                        style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                                        <tr valign="top" style="height:0">
+                                                                            <td style="width:320px"></td>
+                                                                            <td style="width:1px"></td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:1px">
+                                                                            <td
+                                                                                style="pointer-events: auto; background-color: #FFFFFF; border-top: 1px solid #000000; ">
+                                                                            </td>
+                                                                            <td>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr valign="top" style="height:19px">
+                                                                            <td colspan="2">
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:371px">
+                                    <td colspan="19">
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:20px">
+                                    <td>
+                                    </td>
+                                    <td style="text-indent: 0px;  vertical-align: middle;text-align: center;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">DP
+                                            :</span>
+                                    </td>
+                                    <td colspan="4" style="text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                        <span
+                                            style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125; font-weight: bold;">3900</span>
+                                    </td>
+                                    <td colspan="13">
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:1px">
+                                    <td colspan="19">
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:28px">
+                                    <td>
+                                    </td>
+                                    <td colspan="16">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:555px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:28px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:6px"></td>
+                                                        <td style="width:102px"></td>
+                                                        <td style="width:447px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:28px">
+                                                        <td>
+                                                        </td>
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 12px; line-height: 1.2578125;">Rupees
+                                                                In Word :</span>
+                                                        </td>
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px;  vertical-align: middle;text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 12px; line-height: 1.2578125;">twenty
+                                                                one thousand eight hundred thirty five</span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="2">
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:80px">
+                                    <td>
+                                    </td>
+                                    <td colspan="10">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:283px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:80px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:7px"></td>
+                                                        <td style="width:90px"></td>
+                                                        <td style="width:73px"></td>
+                                                        <td style="width:113px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:2px">
+                                                        <td colspan="4">
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:20px">
+                                                        <td>
+                                                        </td>
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 14px; line-height: 1.2578125; font-weight: bold; text-decoration: underline;">declaration</span>
+                                                        </td>
+                                                        <td colspan="2">
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:13px">
+                                                        <td>
+                                                        </td>
+                                                        <td colspan="2"
+                                                            style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125;">declare
+                                                                that this invoice show the </span>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:27px">
+                                                        <td>
+                                                        </td>
+                                                        <td colspan="2"
+                                                            style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125;">the
+                                                                goods described and that all praiculars are true
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:15px">
+                                                        <td>
+                                                        </td>
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1.2578125;">and
+                                                                correct</span>
+                                                        </td>
+                                                        <td colspan="2">
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:3px">
+                                                        <td colspan="4">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="6">
+                                        <div style="width: 100%; height: 100%; position: relative;">
+                                            <div
+                                                style="position: absolute; overflow: hidden; width: 100%; height: 100%; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:272px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:80px">
+                                                        <td
+                                                            style="pointer-events: auto; background-color: #FFFFFF; border: 1px solid #000000; ">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div
+                                                style="position: relative; width: 100%; height: 100%; pointer-events: none; ">
+                                                <table cellpadding="0" cellspacing="0" border="0"
+                                                    style="empty-cells: show; width: 100%; border-collapse: collapse;">
+                                                    <tr valign="top" style="height:0">
+                                                        <td style="width:121px"></td>
+                                                        <td style="width:85px"></td>
+                                                        <td style="width:56px"></td>
+                                                        <td style="width:10px"></td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:20px">
+                                                        <td>
+                                                        </td>
+                                                        <td colspan="2"
+                                                            style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1; line-height: normal; font-weight: bold;">M/S
+                                                                SHARMA ELECTRONICS </span>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:40px">
+                                                        <td colspan="4">
+                                                        </td>
+                                                    </tr>
+                                                    <tr valign="top" style="height:20px">
+                                                        <td colspan="2">
+                                                        </td>
+                                                        <td
+                                                            style="pointer-events: auto; text-indent: 0px; text-align: left;">
+                                                            <span
+                                                                style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; color: #000000; font-size: 10px; line-height: 1; line-height: normal;">Authorised
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="2">
+                                    </td>
+                                </tr>
+                                <tr valign="top" style="height:20px">
+                                    <td colspan="19">
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                        <td width="50%">&nbsp;</td>
+                    </tr>
+                </table>
+            </body>
+        </div>
+    </div>
+</div>

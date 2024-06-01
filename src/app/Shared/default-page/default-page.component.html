@@ -1,0 +1,18 @@
+<!-- Navbar -->
+<div *ngIf="isLoggedIn">
+    <app-nav-bar></app-nav-bar>
+</div>
+<!-- /.navbar -->
+
+<!-- Main Sidebar Container -->
+<div *ngIf="isLoggedIn">
+    <app-side-bar></app-side-bar>
+</div>
+
+<!-- /. Main Sidebar Container -->
+<router-outlet></router-outlet>
+
+<!-- footer -->
+<div *ngIf="isLoggedIn">
+    <app-footer></app-footer>
+</div>
